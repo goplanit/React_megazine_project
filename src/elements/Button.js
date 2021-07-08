@@ -54,7 +54,8 @@ const FloatButton = styled.button`
   background-color: #212121;
   color: #fff;
   box-sizing: border-box;
-  font-size: 36px;
+  border-color: black;
+  font-size: 40px;
   font-weight: 800;
   position: fixed;
   margin: 0 auto;

@@ -76,6 +76,8 @@ Post.defaultProps = {
   contents: "멋진 사진이네요~!",
   comment_cnt: 10,
   insert_dt: "2021-07-02 10:00:00",
+  is_like: false,
+  like_cnt: 0,
 };
 
 export default PostList;

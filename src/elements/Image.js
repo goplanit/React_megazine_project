@@ -29,7 +29,7 @@ const Image = (props) => {
 
 Image.defaultProps = {
   shape: "circle",
-  src: "https://icelandnaturally.com/wp-content/uploads/iceland-peaceful-country.jpg",
+  src: "https://media.vlpt.us/images/goplanit/profile/d50e81fe-66de-42de-908b-4b7af8457d87/social.jpeg?w=240",
   size: 36,
 };
 
