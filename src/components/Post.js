@@ -54,8 +54,8 @@ const Post = React.memo((props) => {
           <Image shape="rectangle" src={props.image_url} />
         </Grid>
         <Grid padding="16px">
-          <Text margin="0px" font-size="24px" bold>
-            댓글 {props.comment_cnt}개
+          <Text margin="0px 10px 0px 3px" font-size="24px" bold>
+            댓글 {props.comment_cnt}개 
           </Text>
 
           <Text margin="0px" bold>

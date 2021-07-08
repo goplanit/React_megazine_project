@@ -224,54 +224,59 @@ const getPostFB = (start = null, size = 3) => {
   };
 };
 
-const toggleLikeFB = (post_id, is_like = false) => {
-  const toggleLikeFB = (post_id) => {
-    return function (dispatch, getState, { history }) {
-      if (!getState().user.user) {
-        return;
-      }
+// const toggleLikeFB = (post_id, is_like = false) => {
+const toggleLikeFB = (post_id) => {
+  return function (dispatch, getState, { history }) {
+    if (!getState().user.user) {
+      return;
+    }
 
-      const postDB = firestore.collection("post");
-      const likeDB = firestore.collection("like");
-      const _idx = getState().post.list.findIndex((p) => p.id === post_id);
-      const _post = getState().post.list[_idx];
-      const user_id = getState().user.user.uid;
+    const postDB = firestore.collection("post");
+    const likeDB = firestore.collection("like");
+    const _idx = getState().post.list.findIndex((p) => p.id === post_id);
+    const _post = getState().post.list[_idx];
+    const user_id = getState().user.user.uid;
 
-      if (_post.is_like) {
-        likeDB
-          .where("post_id", "==", _post.id)
-          .where("user_id", "==", user_id)
-          .get()
-          .then((docs) => {
-            let batch = firestore.batch();
+    if (_post.is_like) {
+      likeDB
+        .where("post_id", "==", _post.id)
+        .where("user_id", "==", user_id)
+        .get()
+        .then((docs) => {
+          let batch = firestore.batch();
 
-            docs.forEach((doc) => {
-              batch.delete(likeDB.doc(doc.id));
-            });
-
-            batch.update(postDB.doc(post_id), {
-              like_cnt:
-                _post.like_cnt - 1 < 1 ? _post.like_cnt : _post.like_cnt - 1,
-            });
-
-            batch.commit().then(() => {
-              dispatch(likeToggle(post_id, !_post.is_like));
-            });
-          })
-          .catch((err) => {
-            console.log(err);
+          docs.forEach((doc) => {
+            batch.delete(likeDB.doc(doc.id));
           });
-      } else {
-        likeDB.add({ post_id: post_id, user_id: user_id }).then((doc) => {
-          postDB
-            .doc(post_id)
-            .update({ like_cnt: _post.like_cnt + 1 })
-            .then((doc) => {
-              dispatch(likeToggle(post_id, !_post.is_like));
-            });
+
+          batch.update(postDB.doc(post_id), {
+            like_cnt:
+              _post.like_cnt - 1 < 1 ? _post.like_cnt : _post.like_cnt - 1,
+          });
+
+          batch.commit().then(() => {
+            dispatch(likeToggle(post_id, !_post.is_like));
+            dispatch(
+              editPost(post_id, { like_cnt: parseInt(_post.like_cnt) - 1 })
+            );
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      }
-    };
+    } else {
+      likeDB.add({ post_id: post_id, user_id: user_id }).then((doc) => {
+        postDB
+          .doc(post_id)
+          .update({ like_cnt: _post.like_cnt + 1 })
+          .then((doc) => {
+            dispatch(likeToggle(post_id, !_post.is_like));
+            dispatch(
+              editPost(post_id, { like_cnt: parseInt(_post.like_cnt) + 1 })
+            );
+          });
+      });
+    }
   };
 };
 
